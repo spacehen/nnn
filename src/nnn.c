@@ -2392,6 +2392,7 @@ static int spawn(char *file, char *arg1, char *arg2, char *arg3, ushort_t flag)
 	if (flag & F_NORMAL)
 		exitcurses();
 
+
 	pid = xfork(flag);
 	if (pid == 0) {
 		/* Suppress stdout and stderr */
@@ -2417,12 +2418,6 @@ static int spawn(char *file, char *arg1, char *arg2, char *arg3, ushort_t flag)
 	} else {
 		retstatus = join(pid, flag);
 		DPRINTF_D(pid);
-
-		if ((flag & F_CONFIRM) || ((flag & F_CHKRTN) && retstatus)) {
-			status = write(STDOUT_FILENO, messages[MSG_ENTER], xstrlen(messages[MSG_ENTER]));
-			(void)status;
-			while ((read(STDIN_FILENO, &status, 1) > 0) && (status != '\n'));
-		}
 
 		if (flag & F_NORMAL)
 			refresh();
@@ -2715,7 +2710,7 @@ static bool batch_rename(void)
 	}
 
 	snprintf(buf, sizeof(buf), batchrenamecmd, foriginal, g_tmpfpath);
-	spawn(utils[UTIL_SH_EXEC], buf, NULL, NULL, F_CLI);
+	spawn(utils[UTIL_BASH], buf, NULL, NULL, F_CLI);
 	ret = TRUE;
 
 finish:
@@ -7036,11 +7031,6 @@ nochange:
 				/* Open file disabled on right arrow or `l` */
 				if (cfg.nonavopen)
 					goto nochange;
-			}
-
-			if (!sb.st_size) {
-				printwait(messages[MSG_EMPTY_FILE], &presel);
-				goto nochange;
 			}
 
 			if (cfg.useeditor
