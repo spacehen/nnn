@@ -2638,7 +2638,7 @@ static bool cpmvrm_selection(enum action sel, char *path)
 		}
 	}
 
-	if (sel != SEL_CPMVAS && spawn(utils[UTIL_SH_EXEC], g_buf, NULL, NULL, F_CLI | F_CHKRTN)) {
+	if (sel != SEL_CPMVAS && spawn(utils[UTIL_SH_EXEC], g_buf, NULL, NULL, F_CLI | F_SILENT)) {
 		printmsg(messages[MSG_FAILED]);
 		return FALSE;
 	}
